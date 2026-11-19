@@ -44,6 +44,100 @@
 						<div class="settings-section-header">
 							<h2 data-i18n="generalSettings">General settings</h2>
 						</div>
+						<div class="setting-group">
+							<div class="setting-items">
+								<div id="usage-chart-container">
+									<div class="usage-chart-header">
+										<div class="usage-chart-title">
+											<div class="usage-chart-name" data-i18n="activity">Activity</div>
+											<div class="setting-item-description"></div>
+										</div>
+										<div class="usage-chart-controls">
+											<select id="usage-metric-select" class="dropdown">
+												<option value="saved" selected data-i18n="saved">Saved</option>
+												<option value="read" data-i18n="read">Read</option>
+											</select>
+											<select id="usage-period-select" class="dropdown">
+												<option value="30d" data-i18n="last30Days">Last 30 days</option>
+												<option value="all" data-i18n="allTime">All time</option>
+											</select>
+											<select id="usage-aggregation-select" class="dropdown">
+												<option value="day" selected data-i18n="byDay">Days</option>
+												<option value="week" data-i18n="byWeek">Weeks</option>
+											</select>
+										</div>
+									</div>
+									<div id="usage-chart" class="usage-chart"></div>
+								</div>
+								<div class="setting-item mod-horizontal is-hidden" id="rate-extension">
+									<div class="setting-item-info">
+										<label data-i18n="feedback">Feedback</label>
+										<div class="setting-item-description" data-i18n="rateExtensionDescription">
+											Are you enjoying Web Clipper? Help us by giving it a rating.
+										</div>
+									</div>
+									<div class="setting-item-control">
+										<div class="star-rating">
+											<span class="star" data-rating="1">★</span>
+											<span class="star" data-rating="2">★</span>
+											<span class="star" data-rating="3">★</span>
+											<span class="star" data-rating="4">★</span>
+											<span class="star" data-rating="5">★</span>
+										</div>
+									</div>
+								</div>
+								<div class="setting-item mod-horizontal">
+									<div class="setting-item-info">
+										<label for="language-select" data-i18n="language">Language</label>
+										<div class="setting-item-description" data-i18n="languageDescription">
+											Choose the display language for the extension interface.
+										</div>
+									</div>
+									<div class="setting-item-control">
+										<select id="language-select">
+											<option value="" data-i18n="systemDefault">System default</option>
+											<option value="en">English</option>
+										</select>
+									</div>
+								</div>
+								<div class="setting-item mod-horizontal">
+									<div class="setting-item-info">
+										<label for="version">
+												<span data-i18n="version">Version</span> <span id="version-number" class="version-tag"></span>
+										</label>
+										<div class="setting-item-description">
+											<span id="using-latest-version" data-i18n="usingLatestVersion">
+												You are using the latest version.
+											</span>
+											<span id="update-available" class="text-warning" style="display: none;" data-i18n="updateAvailable">
+												An update is available.
+											</span>
+										</div>
+									</div>
+									<div class="setting-item-control">
+										<a href="https://github.com/obsidianmd/obsidian-clipper/releases" id="changelog-link" data-i18n="changelog" class="btn" target="_blank">Changelog</a>
+									</div>
+								</div>
+
+								<div class="setting-item mod-horizontal">
+									<div class="setting-item-info">
+										<label for="help-open-btn" data-i18n="help">Help</label>
+										<div class="setting-item-description" data-i18n="helpDescription">Learn how to use Web Clipper and get help troubleshooting.</div>
+									</div>
+									<div class="setting-item-control">
+										<a href="https://help.obsidian.md/web-clipper" id="help-open-btn" class="btn" target="_blank" data-i18n="open">Open</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="setting-group">
+							<div class="setting-item setting-item-heading"><h3 data-i18n="vaults">Vaults</h3></div>
+							<div class="setting-items">
+							<div class="setting-item-description" data-i18n="vaultsDescription">By default, clipped notes are saved to the currently open vault. You can add vaults here if you want the option to save to different vaults. Vault names must exactly match the name of the Obsidian vault. Press <strong>enter</strong> to add a&nbsp;vault.</div>
+							<input type="text" id="vault-input" data-i18n="addVaultPlaceholder" placeholder="Press enter to add a vault" autocomplete="off" spellcheck="false" />
+							<ul id="vault-list" class="setting-item-list"></ul>
+							</div>
+						</div>
 						<form id="livesync-form" hidden>
 							<div class="setting-group">
 								<div class="setting-item setting-item-heading"><h3>Self-hosted LiveSync</h3></div>
@@ -68,100 +162,6 @@
 							</div>
 						</form>
 						<form id="general-settings-form">
-							<div class="setting-group">
-								<div class="setting-items">
-									<div id="usage-chart-container">
-										<div class="usage-chart-header">
-											<div class="usage-chart-title">
-												<div class="usage-chart-name" data-i18n="activity">Activity</div>
-												<div class="setting-item-description"></div>
-											</div>
-											<div class="usage-chart-controls">
-												<select id="usage-metric-select" class="dropdown">
-													<option value="saved" selected data-i18n="saved">Saved</option>
-													<option value="read" data-i18n="read">Read</option>
-												</select>
-												<select id="usage-period-select" class="dropdown">
-													<option value="30d" data-i18n="last30Days">Last 30 days</option>
-													<option value="all" data-i18n="allTime">All time</option>
-												</select>
-												<select id="usage-aggregation-select" class="dropdown">
-													<option value="day" selected data-i18n="byDay">Days</option>
-													<option value="week" data-i18n="byWeek">Weeks</option>
-												</select>
-											</div>
-										</div>
-										<div id="usage-chart" class="usage-chart"></div>
-									</div>
-									<div class="setting-item mod-horizontal is-hidden" id="rate-extension">
-										<div class="setting-item-info">
-											<label data-i18n="feedback">Feedback</label>
-											<div class="setting-item-description" data-i18n="rateExtensionDescription">
-												Are you enjoying Web Clipper? Help us by giving it a rating.
-											</div>
-										</div>
-										<div class="setting-item-control">
-											<div class="star-rating">
-												<span class="star" data-rating="1">★</span>
-												<span class="star" data-rating="2">★</span>
-												<span class="star" data-rating="3">★</span>
-												<span class="star" data-rating="4">★</span>
-												<span class="star" data-rating="5">★</span>
-											</div>
-										</div>
-									</div>
-									<div class="setting-item mod-horizontal">
-										<div class="setting-item-info">
-											<label for="language-select" data-i18n="language">Language</label>
-											<div class="setting-item-description" data-i18n="languageDescription">
-												Choose the display language for the extension interface.
-											</div>
-										</div>
-										<div class="setting-item-control">
-											<select id="language-select">
-												<option value="" data-i18n="systemDefault">System default</option>
-												<option value="en">English</option>
-											</select>
-										</div>
-									</div>
-									<div class="setting-item mod-horizontal">
-										<div class="setting-item-info">
-											<label for="version">
-													<span data-i18n="version">Version</span> <span id="version-number" class="version-tag"></span>
-											</label>
-											<div class="setting-item-description">
-												<span id="using-latest-version" data-i18n="usingLatestVersion">
-													You are using the latest version.
-												</span>
-												<span id="update-available" class="text-warning" style="display: none;" data-i18n="updateAvailable">
-													An update is available.
-												</span>
-											</div>
-										</div>
-										<div class="setting-item-control">
-											<a href="https://github.com/obsidianmd/obsidian-clipper/releases" id="changelog-link" data-i18n="changelog" class="btn" target="_blank">Changelog</a>
-										</div>
-									</div>
-									
-									<div class="setting-item mod-horizontal">
-										<div class="setting-item-info">
-											<label for="help-open-btn" data-i18n="help">Help</label>
-											<div class="setting-item-description" data-i18n="helpDescription">Learn how to use Web Clipper and get help troubleshooting.</div>
-										</div>
-										<div class="setting-item-control">
-											<a href="https://help.obsidian.md/web-clipper" id="help-open-btn" class="btn" target="_blank" data-i18n="open">Open</a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="setting-group">
-								<div class="setting-item setting-item-heading"><h3 data-i18n="vaults">Vaults</h3></div>
-								<div class="setting-items">
-								<div class="setting-item-description" data-i18n="vaultsDescription">By default, clipped notes are saved to the currently open vault. You can add vaults here if you want the option to save to different vaults. Vault names must exactly match the name of the Obsidian vault. Press <strong>enter</strong> to add a&nbsp;vault.</div>
-								<input type="text" id="vault-input" data-i18n="addVaultPlaceholder" placeholder="Press enter to add a vault" autocomplete="off" spellcheck="false" />
-								<ul id="vault-list" class="setting-item-list"></ul>
-								</div>
-							</div>
 							<div class="setting-group" id="hotkeys-subsection">
 								<div class="setting-item setting-item-heading"><h3 data-i18n="hotkeys">Hotkeys</h3></div>
 								<div class="setting-items">
