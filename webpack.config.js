@@ -145,6 +145,11 @@ module.exports = (env, argv) => {
 		plugins: [
 			new CopyPlugin({
 				patterns: [
+					{ from: 'LICENSE', to: 'LICENSE.txt' },
+					...(!isFirefox && !isSafari ? [{
+						from: path.join(path.dirname(require.resolve('@vrtmrz/livesync-commonlib/package.json')), 'LICENSE'),
+						to: 'LICENSE-LiveSync.txt'
+					}] : []),
 					{ 
 						from: isFirefox ? "src/manifest.firefox.json" : 
 							  (isSafari ? "src/manifest.safari.json" : "src/manifest.chrome.json"), 

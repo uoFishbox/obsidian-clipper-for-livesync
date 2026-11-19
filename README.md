@@ -2,7 +2,7 @@
 
 This fork adds direct saving to a Self-hosted LiveSync CouchDB database. In the Chromium build, import a LiveSync Setup URI to save Markdown notes while Obsidian is closed. **Save to LiveSync** appears next to **Add to Obsidian**. [Upstream Web Clipper](https://github.com/obsidianmd/obsidian-clipper) · [Self-hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync)
 
-Build and load this fork as an unpacked Chromium extension, then connect it to your existing LiveSync database. [Build and installation](#developers) · [LiveSync setup](#save-directly-to-self-hosted-livesync)
+Download the Chromium ZIP and load the extracted folder as an unpacked extension, then connect it to your existing LiveSync database. [GitHub Releases](https://github.com/uoFishbox/obsidian-clipper-for-livesync/releases) · [Build and installation](#developers) · [LiveSync setup](#save-directly-to-self-hosted-livesync)
 
 ## Upstream Web Clipper
 
