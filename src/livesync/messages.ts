@@ -1,4 +1,5 @@
 import browser from '../utils/browser-polyfill';
+import type { Template } from '../types/types';
 
 declare const LIVESYNC_ENABLED: boolean;
 export const liveSyncEnabled = LIVESYNC_ENABLED;
@@ -11,7 +12,9 @@ export type LiveSyncErrorCode =
 	| 'liveSyncDatabaseNotReady'
 	| 'liveSyncDestinationChanged'
 	| 'liveSyncInvalidPath'
-	| 'liveSyncPathExists'
+	| 'liveSyncConflict'
+	| 'liveSyncInvalidDailyNote'
+	| 'liveSyncSaveExpired'
 	| 'liveSyncSaveFailed'
 	| 'liveSyncServiceUnavailable';
 
@@ -26,11 +29,21 @@ export interface LiveSyncDestination {
 	label: string;
 }
 
+export interface LiveSyncClip {
+	clipId: string;
+	startedAt: number;
+	behavior: Template['behavior'];
+	folder: string;
+	title: string;
+	frontmatter: string;
+	markdown: string;
+}
+
 export type LiveSyncRequest =
 	| { action: 'liveSyncStatus' }
 	| { action: 'liveSyncConnect'; uri: string; passphrase: string }
 	| { action: 'liveSyncDisconnect' }
-	| { action: 'liveSyncSave'; destinationId: string; clipId: string; folder: string; title: string; markdown: string };
+	| ({ action: 'liveSyncSave'; destinationId: string } & LiveSyncClip);
 
 export type LiveSyncResult =
 	| { ok: true; destination?: LiveSyncDestination; path?: string }

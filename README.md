@@ -1,6 +1,6 @@
 # Obsidian Web Clipper for LiveSync
 
-This fork adds direct saving to a Self-hosted LiveSync CouchDB database. In the Chromium build, import a LiveSync Setup URI to save web clips as new Markdown notes while Obsidian is closed. **Save to LiveSync** appears next to **Add to Obsidian**. [Upstream Web Clipper](https://github.com/obsidianmd/obsidian-clipper) · [Self-hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync)
+This fork adds direct saving to a Self-hosted LiveSync CouchDB database. In the Chromium build, import a LiveSync Setup URI to save Markdown notes while Obsidian is closed. **Save to LiveSync** appears next to **Add to Obsidian**. [Upstream Web Clipper](https://github.com/obsidianmd/obsidian-clipper) · [Self-hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync)
 
 Build and load this fork as an unpacked Chromium extension, then connect it to your existing LiveSync database. [Build and installation](#developers) · [LiveSync setup](#save-directly-to-self-hosted-livesync)
 
@@ -29,7 +29,11 @@ Documentation is available on the [Obsidian Help site](https://help.obsidian.md/
 
 In this fork's Chromium build, open **Settings → General → Self-hosted LiveSync**. Paste a Setup URI from an existing, initialized CouchDB Vault and enter the passphrase used to protect the URI. Select **Connect**, then reopen the clipper. **Save to LiveSync** appears next to **Add to Obsidian**. Quick Clip uses the connected database. The note will appear in Obsidian after its LiveSync plug-in next synchronizes.
 
-This feature supports templates that create new Markdown notes. Each filename includes a unique suffix. Use HTTPS (or localhost HTTP) and a CouchDB account with read/write access to the database. The connection is stored in the local browser profile. Select **Disconnect** to remove it.
+LiveSync uses the template's save behavior to create, append, prepend, or overwrite Markdown notes. A new note gets a numbered suffix if its name is already taken. Appending and prepending to an existing note preserve its frontmatter and use the clip's Markdown body.
+
+Set the daily note folder and date format under **Self-hosted LiveSync** to match your vault. The defaults are the vault root and `YYYY-MM-DD` in the browser's local time. If today's note is missing, the clip creates it with the clipper template's content.
+
+Use HTTPS (or localhost HTTP) and a CouchDB account with read/write access to the database. The connection is stored in the local browser profile. Select **Disconnect** to remove it.
 
 ## Contribute
 

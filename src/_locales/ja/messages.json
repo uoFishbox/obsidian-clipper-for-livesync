@@ -1,6 +1,6 @@
 {
 	"liveSyncDescription": {
-		"message": "同期設定済みの LiveSync CouchDB に新規 Markdown ノートを直接保存します。接続情報はこのブラウザのプロファイルに保存されます。"
+		"message": "同期設定済みの LiveSync CouchDB に Markdown ノートを直接保存します。接続情報はこのブラウザのプロファイルに保存されます。"
 	},
 	"liveSyncSetupUri": {
 		"message": "セットアップ URI"
@@ -44,8 +44,29 @@
 	"liveSyncInvalidPath": {
 		"message": "Vault 内の有効なフォルダーパスを指定してください。"
 	},
-	"liveSyncPathExists": {
-		"message": "同じパスに内容の異なるノートが存在します。"
+	"liveSyncConflict": {
+		"message": "ノートが変更されたか、未解決の競合があります。新しくクリップする前に、Obsidian でノートを確認してください。"
+	},
+	"liveSyncInvalidDailyNote": {
+		"message": "Vault 内の有効なフォルダーと日付形式を指定してください。日付形式の例は YYYY-MM-DD です。"
+	},
+	"liveSyncSaveExpired": {
+		"message": "保存の再試行期限が切れました。新しくクリップする前に、ノートが保存されているか確認してください。"
+	},
+	"liveSyncDailyFolder": {
+		"message": "デイリーノートのフォルダー"
+	},
+	"liveSyncDailyFolderDescription": {
+		"message": "空欄にすると Vault のルートに保存します。"
+	},
+	"liveSyncDailyFormat": {
+		"message": "デイリーノートの日付形式"
+	},
+	"liveSyncDailyFormatDescription": {
+		"message": "YYYY-MM-DD や YYYY/MM/YYYY-MM-DD などの日付形式を指定します。"
+	},
+	"liveSyncDailySaved": {
+		"message": "設定を保存しました。今日のパスは $1 です。"
 	},
 	"liveSyncSaveFailed": {
 		"message": "LiveSync への保存を確認できませんでした。この画面で再試行すると同じパスを使います。"
@@ -55,9 +76,6 @@
 	},
 	"saveToLiveSync": {
 		"message": "LiveSync に保存"
-	},
-	"liveSyncCreateOnly": {
-		"message": "LiveSync に保存するには、新規ノートを作成するテンプレートを選んでください。"
 	},
 	"liveSyncUploading": {
 		"message": "LiveSync に保存しています…"

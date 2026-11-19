@@ -1,6 +1,6 @@
 {
 	"liveSyncDescription": {
-		"message": "Save new Markdown notes directly to an initialized LiveSync CouchDB database. The connection is stored in this browser profile."
+		"message": "Save Markdown notes directly to an initialized LiveSync CouchDB database. The connection is stored in this browser profile."
 	},
 	"liveSyncSetupUri": {
 		"message": "Setup URI"
@@ -44,8 +44,29 @@
 	"liveSyncInvalidPath": {
 		"message": "Choose a valid vault-relative folder for this note."
 	},
-	"liveSyncPathExists": {
-		"message": "A note already exists at this path with different content."
+	"liveSyncConflict": {
+		"message": "The note changed or has unresolved edits. Check it in Obsidian before starting a new clip."
+	},
+	"liveSyncInvalidDailyNote": {
+		"message": "Choose a valid vault-relative daily note folder and date format, such as YYYY-MM-DD."
+	},
+	"liveSyncSaveExpired": {
+		"message": "This save attempt expired. Check whether the note was saved before starting a new clip."
+	},
+	"liveSyncDailyFolder": {
+		"message": "Daily note folder"
+	},
+	"liveSyncDailyFolderDescription": {
+		"message": "Leave blank to use the root of the vault."
+	},
+	"liveSyncDailyFormat": {
+		"message": "Daily note date format"
+	},
+	"liveSyncDailyFormatDescription": {
+		"message": "Use a date pattern such as YYYY-MM-DD or YYYY/MM/YYYY-MM-DD."
+	},
+	"liveSyncDailySaved": {
+		"message": "Settings saved. Today’s path: $1"
 	},
 	"liveSyncSaveFailed": {
 		"message": "Could not confirm the LiveSync save. Retry here to reuse the same path."
@@ -55,9 +76,6 @@
 	},
 	"saveToLiveSync": {
 		"message": "Save to LiveSync"
-	},
-	"liveSyncCreateOnly": {
-		"message": "Choose a template that creates a new note to save to LiveSync."
 	},
 	"liveSyncUploading": {
 		"message": "Saving to LiveSync…"

@@ -23,7 +23,7 @@ import { sanitizeFileName } from '../utils/string-utils';
 import { saveFile } from '../utils/file-utils';
 import { translatePage, getMessage, setupLanguageAndDirection } from '../utils/i18n';
 import { formatPropertyValue } from '../utils/shared';
-import { LiveSyncError, liveSyncEnabled, requestLiveSync, type LiveSyncDestination } from '../livesync/messages';
+import { LiveSyncError, liveSyncEnabled, requestLiveSync, type LiveSyncClip, type LiveSyncDestination } from '../livesync/messages';
 
 interface ReaderModeResponse {
 	success: boolean;
@@ -37,7 +37,7 @@ let currentVariables: { [key: string]: string } = {};
 let currentTabId: number | undefined;
 let lastSelectedVault: string | null = null;
 let liveSyncDestination: LiveSyncDestination | undefined;
-let liveSyncPending: { clipId: string; folder: string; title: string; markdown: string } | undefined;
+let liveSyncPending: LiveSyncClip | undefined;
 let savingToLiveSync = false;
 let clipperInitialized = false;
 let quickClipReady = false;
@@ -1364,10 +1364,6 @@ async function handleClipObsidian(destination?: LiveSyncDestination): Promise<vo
 	const template = currentTemplate;
 	const liveSyncButton = document.querySelector<HTMLButtonElement>('#livesync-clip-btn')!;
 	if (destination) {
-		if (template.behavior !== 'create') {
-			showLiveSyncSaveStatus('liveSyncCreateOnly');
-			throw new Error('liveSyncCreateOnly');
-		}
 		savingToLiveSync = true;
 		liveSyncButton.disabled = true;
 		showLiveSyncSaveStatus('liveSyncUploading');
@@ -1395,7 +1391,8 @@ async function handleClipObsidian(destination?: LiveSyncDestination): Promise<vo
 		const properties = getPropertiesFromDOM();
 
 		const frontmatter = await generateFrontmatter(properties);
-		const fileContent = frontmatter + noteContentField.value;
+		const markdown = noteContentField.value;
+		const fileContent = frontmatter + markdown;
 
 		// Save to Obsidian
 		const selectedVault = vaultDropdown.value || template.vault || '';
@@ -1405,8 +1402,12 @@ async function handleClipObsidian(destination?: LiveSyncDestination): Promise<vo
 
 		if (destination) {
 			if (!liveSyncPending || liveSyncPending.folder !== path || liveSyncPending.title !== noteName ||
-				liveSyncPending.markdown !== fileContent) {
-				liveSyncPending = { clipId: crypto.randomUUID(), folder: path, title: noteName, markdown: fileContent };
+				liveSyncPending.behavior !== template.behavior || liveSyncPending.frontmatter !== frontmatter ||
+				liveSyncPending.markdown !== markdown) {
+				liveSyncPending = {
+					clipId: crypto.randomUUID(), startedAt: Date.now(), behavior: template.behavior,
+					folder: path, title: noteName, frontmatter, markdown,
+				};
 			}
 			const result = await requestLiveSync({
 				action: 'liveSyncSave',

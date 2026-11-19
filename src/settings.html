@@ -138,29 +138,53 @@
 							<ul id="vault-list" class="setting-item-list"></ul>
 							</div>
 						</div>
-						<form id="livesync-form" hidden>
-							<div class="setting-group">
-								<div class="setting-item setting-item-heading"><h3>Self-hosted LiveSync</h3></div>
-								<div class="setting-items">
-									<p class="setting-item-description" data-i18n="liveSyncDescription">Save new Markdown notes directly to an existing LiveSync CouchDB database.</p>
-									<div class="setting-item mod-horizontal">
-										<label for="livesync-uri" data-i18n="liveSyncSetupUri">Setup URI</label>
-										<input id="livesync-uri" type="password" required autocomplete="off" spellcheck="false">
-									</div>
-									<div class="setting-item mod-horizontal">
-										<label for="livesync-passphrase" data-i18n="liveSyncSetupPassphrase">Setup URI passphrase</label>
-										<input id="livesync-passphrase" type="password" required autocomplete="off">
-									</div>
-									<div class="setting-item mod-horizontal">
-										<p id="livesync-status" aria-live="polite"></p>
-										<div class="setting-item-control">
-											<button type="button" id="livesync-disconnect" data-i18n="liveSyncDisconnect" hidden>Disconnect</button>
-											<button type="submit" id="livesync-connect" class="mod-cta" data-i18n="liveSyncConnect">Connect</button>
-										</div>
+						<div id="livesync-settings" class="setting-group" hidden>
+							<div class="setting-item setting-item-heading"><h3>Self-hosted LiveSync</h3></div>
+							<form id="livesync-form" class="setting-items">
+								<p class="setting-item-description" data-i18n="liveSyncDescription">Save Markdown notes directly to an existing LiveSync CouchDB database.</p>
+								<div class="setting-item mod-horizontal">
+									<label for="livesync-uri" data-i18n="liveSyncSetupUri">Setup URI</label>
+									<input id="livesync-uri" type="password" required autocomplete="off" spellcheck="false">
+								</div>
+								<div class="setting-item mod-horizontal">
+									<label for="livesync-passphrase" data-i18n="liveSyncSetupPassphrase">Setup URI passphrase</label>
+									<input id="livesync-passphrase" type="password" required autocomplete="off">
+								</div>
+								<div class="setting-item mod-horizontal">
+									<p id="livesync-status" aria-live="polite"></p>
+									<div class="setting-item-control">
+										<button type="button" id="livesync-disconnect" data-i18n="liveSyncDisconnect" hidden>Disconnect</button>
+										<button type="submit" id="livesync-connect" class="mod-cta" data-i18n="liveSyncConnect">Connect</button>
 									</div>
 								</div>
-							</div>
-						</form>
+							</form>
+							<form id="livesync-daily-form" class="setting-items">
+								<div class="setting-item mod-horizontal">
+									<div class="setting-item-info">
+										<label for="livesync-daily-folder" data-i18n="liveSyncDailyFolder">Daily note folder</label>
+										<div class="setting-item-description" data-i18n="liveSyncDailyFolderDescription">Leave blank to use the root of the vault.</div>
+									</div>
+									<div class="setting-item-control">
+										<input id="livesync-daily-folder" type="text" placeholder="Daily" spellcheck="false">
+									</div>
+								</div>
+								<div class="setting-item mod-horizontal">
+									<div class="setting-item-info">
+										<label for="livesync-daily-format" data-i18n="liveSyncDailyFormat">Daily note date format</label>
+										<div class="setting-item-description" data-i18n="liveSyncDailyFormatDescription">Use a date pattern such as YYYY-MM-DD or YYYY/MM/YYYY-MM-DD.</div>
+									</div>
+									<div class="setting-item-control">
+										<input id="livesync-daily-format" type="text" required placeholder="YYYY-MM-DD" spellcheck="false">
+									</div>
+								</div>
+								<div class="setting-item mod-horizontal">
+									<p id="livesync-daily-status" aria-live="polite"></p>
+									<div class="setting-item-control">
+										<button type="submit" data-i18n="save">Save</button>
+									</div>
+								</div>
+							</form>
+						</div>
 						<form id="general-settings-form">
 							<div class="setting-group" id="hotkeys-subsection">
 								<div class="setting-item setting-item-heading"><h3 data-i18n="hotkeys">Hotkeys</h3></div>
