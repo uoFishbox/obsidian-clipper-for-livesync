@@ -1,4 +1,70 @@
 {
+	"liveSyncDescription": {
+		"message": "同期設定済みの LiveSync CouchDB に新規 Markdown ノートを直接保存します。接続情報はこのブラウザのプロファイルに保存されます。"
+	},
+	"liveSyncSetupUri": {
+		"message": "セットアップ URI"
+	},
+	"liveSyncSetupPassphrase": {
+		"message": "セットアップ URI のパスフレーズ"
+	},
+	"liveSyncConnect": {
+		"message": "接続"
+	},
+	"liveSyncDisconnect": {
+		"message": "接続を解除"
+	},
+	"liveSyncConnected": {
+		"message": "接続先 $1"
+	},
+	"liveSyncDisconnected": {
+		"message": "未接続"
+	},
+	"liveSyncWorking": {
+		"message": "LiveSync の接続を確認しています…"
+	},
+	"liveSyncInvalidSetup": {
+		"message": "セットアップ URI を開けませんでした。URI とパスフレーズを確認してください。期限付き URI の場合は期限も確認してください。"
+	},
+	"liveSyncUnsupportedRemote": {
+		"message": "ユーザー名とパスワードで認証し、標準のヘッダーを使う CouchDB プロファイルを有効にしてください。"
+	},
+	"liveSyncInvalidServer": {
+		"message": "CouchDB の認証情報、データベース名、サーバー URL を確認してください。HTTPS、または localhost の HTTP を使用してください。"
+	},
+	"liveSyncConnectionFailed": {
+		"message": "CouchDB に接続できませんでした。サーバー、認証情報、データベースの権限を確認してください。"
+	},
+	"liveSyncDatabaseNotReady": {
+		"message": "初期化済みの LiveSync データベースを使用し、暗号化とパスの設定を同期先と揃えてください。"
+	},
+	"liveSyncDestinationChanged": {
+		"message": "LiveSync の接続先が変わりました。クリッパーを開き直してから保存してください。"
+	},
+	"liveSyncInvalidPath": {
+		"message": "Vault 内の有効なフォルダーパスを指定してください。"
+	},
+	"liveSyncPathExists": {
+		"message": "同じパスに内容の異なるノートが存在します。"
+	},
+	"liveSyncSaveFailed": {
+		"message": "LiveSync への保存を確認できませんでした。この画面で再試行すると同じパスを使います。"
+	},
+	"liveSyncServiceUnavailable": {
+		"message": "LiveSync の拡張機能サービスを利用できません。拡張機能を再読み込みしてください。"
+	},
+	"saveToLiveSync": {
+		"message": "LiveSync に保存"
+	},
+	"liveSyncCreateOnly": {
+		"message": "LiveSync に保存するには、新規ノートを作成するテンプレートを選んでください。"
+	},
+	"liveSyncUploading": {
+		"message": "LiveSync に保存しています…"
+	},
+	"liveSyncSaved": {
+		"message": "LiveSync に保存しました $1"
+	},
 	"activity": {
 		"message": "アクティビティ"
 	},

@@ -11,6 +11,7 @@ import {
 } from '../managers/template-manager';
 import { updateTemplateList, showTemplateEditor, initializeAddPropertyButton, initializeTemplateValidation } from '../managers/template-ui';
 import { initializeGeneralSettings } from '../managers/general-settings';
+import { initializeLiveSyncSettings } from '../livesync/settings-ui';
 import { initializeInterpreterSettings } from '../managers/interpreter-settings';
 import { showSettingsSection, initializeSidebar } from '../managers/settings-section-ui';
 import { initializeReaderSettings } from '../managers/reader-settings';
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			await translatePage();
 
 			await initializeGeneralSettings();
+			void initializeLiveSyncSettings();
 			await initializeReaderSettings();
 			
 			// Initialize interpreter settings with error handling

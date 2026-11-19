@@ -1,4 +1,70 @@
 {
+	"liveSyncDescription": {
+		"message": "Save new Markdown notes directly to an initialized LiveSync CouchDB database. The connection is stored in this browser profile."
+	},
+	"liveSyncSetupUri": {
+		"message": "Setup URI"
+	},
+	"liveSyncSetupPassphrase": {
+		"message": "Setup URI passphrase"
+	},
+	"liveSyncConnect": {
+		"message": "Connect"
+	},
+	"liveSyncDisconnect": {
+		"message": "Disconnect"
+	},
+	"liveSyncConnected": {
+		"message": "Connected to $1."
+	},
+	"liveSyncDisconnected": {
+		"message": "Disconnected"
+	},
+	"liveSyncWorking": {
+		"message": "Checking LiveSync connection…"
+	},
+	"liveSyncInvalidSetup": {
+		"message": "Could not open the Setup URI. Check the URI and its passphrase. Time-bound URIs can expire."
+	},
+	"liveSyncUnsupportedRemote": {
+		"message": "Use an active CouchDB profile with username and password authentication and standard headers."
+	},
+	"liveSyncInvalidServer": {
+		"message": "Check the CouchDB credentials, database name and server URL. Use HTTPS, or HTTP on localhost."
+	},
+	"liveSyncConnectionFailed": {
+		"message": "Could not connect to CouchDB. Check the server, credentials and database permissions."
+	},
+	"liveSyncDatabaseNotReady": {
+		"message": "Use an initialized LiveSync database with compatible encryption and path settings."
+	},
+	"liveSyncDestinationChanged": {
+		"message": "The LiveSync connection changed. Reopen the clipper before saving."
+	},
+	"liveSyncInvalidPath": {
+		"message": "Choose a valid vault-relative folder for this note."
+	},
+	"liveSyncPathExists": {
+		"message": "A note already exists at this path with different content."
+	},
+	"liveSyncSaveFailed": {
+		"message": "Could not confirm the LiveSync save. Retry here to reuse the same path."
+	},
+	"liveSyncServiceUnavailable": {
+		"message": "The LiveSync extension service is unavailable. Reload the extension and try again."
+	},
+	"saveToLiveSync": {
+		"message": "Save to LiveSync"
+	},
+	"liveSyncCreateOnly": {
+		"message": "Choose a template that creates a new note to save to LiveSync."
+	},
+	"liveSyncUploading": {
+		"message": "Saving to LiveSync…"
+	},
+	"liveSyncSaved": {
+		"message": "Saved to LiveSync: $1"
+	},
 	"activity": {
 		"message": "Activity"
 	},

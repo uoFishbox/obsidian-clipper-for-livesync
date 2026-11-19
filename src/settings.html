@@ -44,6 +44,29 @@
 						<div class="settings-section-header">
 							<h2 data-i18n="generalSettings">General settings</h2>
 						</div>
+						<form id="livesync-form" hidden>
+							<div class="setting-group">
+								<div class="setting-item setting-item-heading"><h3>Self-hosted LiveSync</h3></div>
+								<div class="setting-items">
+									<p class="setting-item-description" data-i18n="liveSyncDescription">Save new Markdown notes directly to an existing LiveSync CouchDB database.</p>
+									<div class="setting-item mod-horizontal">
+										<label for="livesync-uri" data-i18n="liveSyncSetupUri">Setup URI</label>
+										<input id="livesync-uri" type="password" required autocomplete="off" spellcheck="false">
+									</div>
+									<div class="setting-item mod-horizontal">
+										<label for="livesync-passphrase" data-i18n="liveSyncSetupPassphrase">Setup URI passphrase</label>
+										<input id="livesync-passphrase" type="password" required autocomplete="off">
+									</div>
+									<div class="setting-item mod-horizontal">
+										<p id="livesync-status" aria-live="polite"></p>
+										<div class="setting-item-control">
+											<button type="button" id="livesync-disconnect" data-i18n="liveSyncDisconnect" hidden>Disconnect</button>
+											<button type="submit" id="livesync-connect" class="mod-cta" data-i18n="liveSyncConnect">Connect</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
 						<form id="general-settings-form">
 							<div class="setting-group">
 								<div class="setting-items">
