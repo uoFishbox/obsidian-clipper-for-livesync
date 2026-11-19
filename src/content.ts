@@ -122,7 +122,12 @@ declare global {
 			return true;
 		}
 
-		if (request.action === "toggle-iframe") {
+		if (request.action === "ensure-clipper-iframe" && document.getElementById('obsidian-clipper-iframe')) {
+			sendResponse({ success: true });
+			return true;
+		}
+
+		if (request.action === "toggle-iframe" || request.action === "ensure-clipper-iframe") {
 			toggleIframe().then(() => {
 				sendResponse({ success: true });
 			});

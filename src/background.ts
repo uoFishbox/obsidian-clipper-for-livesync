@@ -11,6 +11,7 @@ import { hasStoredHighlights } from './utils/url-utils';
 
 const YOUTUBE_EMBED_RULE_ID = 9001;
 const YOUTUBE_INNERTUBE_RULE_ID = 9002;
+let quickClipRequest: { tabId: number; expires: number } | undefined;
 
 // Chrome: declarativeNetRequest to rewrite Referer on YouTube embeds.
 // Safari/Firefox use the native video element instead (see reader.ts).
@@ -398,6 +399,16 @@ browser.runtime.onMessage.addListener((request: unknown) => {
 browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime.MessageSender, sendResponse: (response?: any) => void): true | undefined => {
 	if (typeof request === 'object' && request !== null) {
 		const typedRequest = request as { action: string; isActive?: boolean; hasHighlights?: boolean; tabId?: number; text?: string; section?: string; readerUrl?: string; url?: string };
+
+		if (typedRequest.action === 'takeQuickClip') {
+			const page = sender.url?.split(/[?#]/, 1)[0];
+			const isClipper = page === browser.runtime.getURL('popup.html') || page === browser.runtime.getURL('side-panel.html');
+			const ready = isClipper && !!quickClipRequest && quickClipRequest.tabId === typedRequest.tabId &&
+				quickClipRequest.expires > Date.now();
+			if (ready) quickClipRequest = undefined;
+			sendResponse(ready);
+			return true;
+		}
 
 		if (typedRequest.action === 'loadContentScriptForHighlights') {
 			const tabId = sender.tab?.id;
@@ -805,11 +816,15 @@ browser.commands.onCommand.addListener(async (command, tab) => {
 
 	if (command === 'quick_clip') {
 		if (tab?.id) {
-			openPopup();
-			setTimeout(() => {
-				browser.runtime.sendMessage({action: "triggerQuickClip"})
-					.catch(error => console.error("Failed to send quick clip message:", error));
-			}, 500);
+			const request = { tabId: tab.id, expires: Date.now() + 30_000 };
+			quickClipRequest = request;
+			try {
+				const claimed = await browser.runtime.sendMessage({ action: 'triggerQuickClip', tabId: tab.id }).catch(() => false);
+				if (!claimed && quickClipRequest === request) await openPopup(true);
+			} catch (error) {
+				if (quickClipRequest === request) quickClipRequest = undefined;
+				console.error('Failed to open Quick Clip:', error);
+			}
 		}
 	}
 	if (command === "toggle_highlighter" && tab?.id) {
@@ -1121,12 +1136,12 @@ async function updateActionPopup(openBehavior?: Settings['openBehavior']): Promi
 let currentOpenBehavior: Settings['openBehavior'] = 'popup';
 
 // In reader/embedded mode, opens embedded iframe instead of popup.
-async function openPopup(): Promise<void> {
+async function openPopup(quickClip = false): Promise<void> {
 	if (currentOpenBehavior === 'reader' || currentOpenBehavior === 'embedded') {
 		const tabs = await browser.tabs.query({ active: true, currentWindow: true });
 		const tab = tabs[0];
 		if (tab?.id && tab.url && isValidUrl(tab.url) && !isBlankPage(tab.url)) {
-			await sendMessageToContentScript(tab.id, { action: "toggle-iframe" });
+			await sendMessageToContentScript(tab.id, { action: quickClip ? 'ensure-clipper-iframe' : 'toggle-iframe' });
 			return;
 		}
 		// Fall through to popup if tab is invalid

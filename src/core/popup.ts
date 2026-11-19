@@ -35,6 +35,9 @@ let templates: Template[] = [];
 let currentVariables: { [key: string]: string } = {};
 let currentTabId: number | undefined;
 let lastSelectedVault: string | null = null;
+let clipperInitialized = false;
+let quickClipReady = false;
+let quickClipRefresh = 0;
 
 const isSidePanel = window.location.pathname.includes('side-panel.html');
 const urlParams = new URLSearchParams(window.location.search);
@@ -250,28 +253,25 @@ function setupStorageListeners() {
 function setupMessageListeners() {
 	browser.runtime.onMessage.addListener((request: any, sender: browser.Runtime.MessageSender, sendResponse: (response?: any) => void) => {
 		if (request.action === "triggerQuickClip") {
-			handleClipObsidian().then(() => {
-				sendResponse({success: true});
-			}).catch((error) => {
-				console.error('Error in handleClipObsidian:', error);
-				sendResponse({success: false, error: error.message});
-			});
+			if (!quickClipReady || request.tabId !== currentTabId) return;
+			runQuickClip(request.tabId).then(sendResponse).catch(() => sendResponse(false));
 			return true;
 		} else if (request.action === "tabUrlChanged") {
 			if (request.tabId === currentTabId) {
 				if (currentTabId !== undefined) {
-					refreshFields(currentTabId);
+					void refreshFieldsForClip(currentTabId);
 				}
 			}
 		} else if (request.action === "activeTabChanged") {
-			// Only handle active tab changes if we're in side panel mode, not iframe mode
+			// An embedded clipper stays attached to the page hosting it.
 			if (!isIframe) {
+				quickClipReady = false;
 				currentTabId = request.tabId;
 				if (request.isRestrictedUrl) {
 					showError('pageCannotBeClipped');
 				} else if (request.isValidUrl) {
 					if (currentTabId !== undefined) {
-						refreshFields(currentTabId); // Force template check when URL changes
+						void refreshFieldsForClip(currentTabId);
 					}
 				} else if (request.isBlankPage) {
 					showError('pageCannotBeClipped');
@@ -285,6 +285,23 @@ function setupMessageListeners() {
 			// This message is now handled by checkHighlighterModeState
 		}
 	});
+}
+
+async function runQuickClip(tabId: number) {
+	if (!clipperInitialized || !quickClipReady || document.body.classList.contains('has-error')) return false;
+	const claimed = await browser.runtime.sendMessage({ action: 'takeQuickClip', tabId });
+	if (claimed && quickClipReady && tabId === currentTabId) await handleClipObsidian();
+	return claimed;
+}
+
+async function refreshFieldsForClip(tabId: number) {
+	const revision = ++quickClipRefresh;
+	quickClipReady = false;
+	await refreshFields(tabId);
+	if (revision === quickClipRefresh && tabId === currentTabId) {
+		quickClipReady = true;
+		void runQuickClip(tabId).catch(() => {});
+	}
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -387,8 +404,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 				setupEventListeners(currentTabId);
 				await initializeUI();
 
-				determineMainAction();
-
 				const showMoreActionsButton = document.getElementById('show-variables');
 				if (showMoreActionsButton) {
 					showMoreActionsButton.addEventListener('click', (e) => {
@@ -398,7 +413,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 				}
 
 				// Initial content load
-				await refreshFields(currentTabId);
+				await refreshFieldsForClip(currentTabId);
+				determineMainAction();
+				clipperInitialized = true;
+				void runQuickClip(currentTabId).catch(() => {});
 			} catch (error) {
 				console.error('Error initializing popup:', error);
 				showError(getMessage('pleaseReload'));
@@ -1317,7 +1335,7 @@ function determineMainAction() {
 }
 
 async function handleClipObsidian(): Promise<void> {
-	if (!currentTemplate) return;
+	if (!currentTemplate || !clipperInitialized || !quickClipReady) return;
 
 	const vaultDropdown = document.getElementById('vault-select') as HTMLSelectElement;
 	const noteContentField = document.getElementById('note-content-field') as HTMLTextAreaElement;
