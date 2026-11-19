@@ -37,6 +37,7 @@
 			</div>
 		</div>
 		<p class="error-message" style="display: none;"></p>
+		<p id="livesync-save-status" role="status" hidden></p>
 		<div class="clipper">
 			<textarea id="note-name-field" type="text" data-i18n="noteName" rows="1"></textarea>
 			<div class="metadata-properties-header">
@@ -65,14 +66,20 @@
 					<div id="interpreter-error" style="display: none;"></div>
 				</div>
 				<div class="action-buttons" id="action-buttons">
-					<button id="clip-btn" class="mod-cta"><!-- Text set by determineMainAction --></button>
-					<div class="menu-btn">
-						<button id="more-btn"><i data-lucide="chevron-down"></i></button>
-						<div class="menu" id="more-dropdown">
-							<div class="secondary-actions">
-								<!-- Secondary actions will be populated by ts -->
+					<div class="clip-action">
+						<button id="clip-btn" class="mod-cta"><!-- Text set by determineMainAction --></button>
+						<div class="menu-btn">
+							<button id="more-btn"><i data-lucide="chevron-down"></i></button>
+							<div class="menu" id="more-dropdown">
+								<div class="secondary-actions">
+									<!-- Secondary actions will be populated by ts -->
+								</div>
 							</div>
 						</div>
+					</div>
+					<div id="clip-destinations" class="clip-destinations" hidden>
+						<button id="obsidian-clip-btn" type="button" class="mod-cta" data-i18n="addToObsidian" hidden></button>
+						<button id="livesync-clip-btn" type="button" data-i18n="saveToLiveSync"></button>
 					</div>
 					<div class="share-btn">
 						<a class="share-content clickable-icon" data-i18n-title="share"><i data-lucide="share"></i></a>

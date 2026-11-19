@@ -23,6 +23,7 @@ import { sanitizeFileName } from '../utils/string-utils';
 import { saveFile } from '../utils/file-utils';
 import { translatePage, getMessage, setupLanguageAndDirection } from '../utils/i18n';
 import { formatPropertyValue } from '../utils/shared';
+import { LiveSyncError, liveSyncEnabled, requestLiveSync, type LiveSyncDestination } from '../livesync/messages';
 
 interface ReaderModeResponse {
 	success: boolean;
@@ -35,6 +36,9 @@ let templates: Template[] = [];
 let currentVariables: { [key: string]: string } = {};
 let currentTabId: number | undefined;
 let lastSelectedVault: string | null = null;
+let liveSyncDestination: LiveSyncDestination | undefined;
+let liveSyncPending: { clipId: string; folder: string; title: string; markdown: string } | undefined;
+let savingToLiveSync = false;
 let clipperInitialized = false;
 let quickClipReady = false;
 let quickClipRefresh = 0;
@@ -290,7 +294,7 @@ function setupMessageListeners() {
 async function runQuickClip(tabId: number) {
 	if (!clipperInitialized || !quickClipReady || document.body.classList.contains('has-error')) return false;
 	const claimed = await browser.runtime.sendMessage({ action: 'takeQuickClip', tabId });
-	if (claimed && quickClipReady && tabId === currentTabId) await handleClipObsidian();
+	if (claimed && quickClipReady && tabId === currentTabId) await handleClipObsidian(liveSyncDestination);
 	return claimed;
 }
 
@@ -398,6 +402,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 			}
 
 			try {
+				if (liveSyncEnabled) {
+					({ destination: liveSyncDestination } = await requestLiveSync({ action: 'liveSyncStatus' }));
+				}
 				// DOM-dependent initializations
 				updateVaultDropdown(loadedSettings.vaults);
 				populateTemplateDropdown();
@@ -419,7 +426,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 				void runQuickClip(currentTabId).catch(() => {});
 			} catch (error) {
 				console.error('Error initializing popup:', error);
-				showError(getMessage('pleaseReload'));
+				showError(error instanceof LiveSyncError ? error.code : 'pleaseReload');
 			}
 		} else {
 			showError(getMessage('pleaseReload'));
@@ -1086,7 +1093,7 @@ function updateVaultDropdown(vaults: string[]) {
 		vaultDropdown.appendChild(option);
 	});
 
-	// Only show vault selector if vaults are defined
+	// The Vault selector applies to the Obsidian action.
 	if (vaults.length > 0) {
 		vaultContainer.style.display = 'block';
 		if (lastSelectedVault && vaults.includes(lastSelectedVault)) {
@@ -1306,36 +1313,65 @@ function determineMainAction() {
 	const secondaryActions = moreDropdown?.querySelector('.secondary-actions');
 	if (!mainButton || !secondaryActions) return;
 
-	// Clear existing secondary actions
 	secondaryActions.textContent = '';
+	const destination = liveSyncDestination;
+	const clip = () => { void handleClipObsidian().catch(() => {}); };
+	if (destination) {
+		const useDestinationRow = loadedSettings.saveBehavior !== 'addToObsidian';
+		const destinations = document.getElementById('clip-destinations')!;
+		const obsidianButton = document.getElementById('obsidian-clip-btn')!;
+		const liveSyncButton = document.getElementById('livesync-clip-btn')!;
+		const actions = document.getElementById('action-buttons')!;
+		actions.classList.add('has-livesync');
+		destinations.hidden = false;
+		destinations.classList.toggle('is-destination-row', useDestinationRow);
+		if (useDestinationRow) actions.append(destinations);
+		obsidianButton.hidden = !useDestinationRow;
+		obsidianButton.onclick = clip;
+		liveSyncButton.title = destination.label;
+		liveSyncButton.onclick = () => { void handleClipObsidian(destination).catch(() => {}); };
+	}
 
-	// Set up actions based on saved behavior
 	switch (loadedSettings.saveBehavior) {
 		case 'copyToClipboard':
 			mainButton.textContent = getMessage('copyToClipboard');
 			mainButton.onclick = () => copyContent();
-			// Add direct actions to secondary
-			addSecondaryAction(secondaryActions, 'addToObsidian', () => handleClipObsidian());
+			if (!destination) addSecondaryAction(secondaryActions, 'addToObsidian', clip);
 			addSecondaryAction(secondaryActions, 'saveFile', handleSaveToDownloads);
 			break;
 		case 'saveFile':
 			mainButton.textContent = getMessage('saveFile');
 			mainButton.onclick = () => handleSaveToDownloads();
-			// Add direct actions to secondary
-			addSecondaryAction(secondaryActions, 'addToObsidian', () => handleClipObsidian());
+			if (!destination) addSecondaryAction(secondaryActions, 'addToObsidian', clip);
 			addSecondaryAction(secondaryActions, 'copyToClipboard', copyContent);
 			break;
 		default: // 'addToObsidian'
 			mainButton.textContent = getMessage('addToObsidian');
-			mainButton.onclick = () => handleClipObsidian();
-			// Add direct actions to secondary
+			mainButton.onclick = clip;
 			addSecondaryAction(secondaryActions, 'copyToClipboard', copyContent);
 			addSecondaryAction(secondaryActions, 'saveFile', handleSaveToDownloads);
 	}
 }
 
-async function handleClipObsidian(): Promise<void> {
-	if (!currentTemplate || !clipperInitialized || !quickClipReady) return;
+function showLiveSyncSaveStatus(message: string, value?: string) {
+	const status = document.getElementById('livesync-save-status')!;
+	status.textContent = getMessage(message, value);
+	status.hidden = false;
+}
+
+async function handleClipObsidian(destination?: LiveSyncDestination): Promise<void> {
+	if (!currentTemplate || !clipperInitialized || !quickClipReady || (destination && savingToLiveSync)) return;
+	const template = currentTemplate;
+	const liveSyncButton = document.querySelector<HTMLButtonElement>('#livesync-clip-btn')!;
+	if (destination) {
+		if (template.behavior !== 'create') {
+			showLiveSyncSaveStatus('liveSyncCreateOnly');
+			throw new Error('liveSyncCreateOnly');
+		}
+		savingToLiveSync = true;
+		liveSyncButton.disabled = true;
+		showLiveSyncSaveStatus('liveSyncUploading');
+	}
 
 	const vaultDropdown = document.getElementById('vault-select') as HTMLSelectElement;
 	const noteContentField = document.getElementById('note-content-field') as HTMLTextAreaElement;
@@ -1343,14 +1379,10 @@ async function handleClipObsidian(): Promise<void> {
 	const pathField = document.getElementById('path-name-field') as HTMLInputElement;
 	const interpretBtn = document.getElementById('interpret-btn') as HTMLButtonElement;
 
-	if (!vaultDropdown || !noteContentField) {
-		showError('Some required fields are missing. Please try reloading the extension.');
-		return;
-	}
-
 	try {
+		if (!vaultDropdown || !noteContentField) throw new Error('Missing clip fields');
 		// Handle interpreter if needed
-		if (generalSettings.interpreterEnabled && interpretBtn && collectPromptVariables(currentTemplate).length > 0) {
+		if (generalSettings.interpreterEnabled && interpretBtn && collectPromptVariables(template).length > 0) {
 			if (interpretBtn.classList.contains('processing')) {
 				await waitForInterpreter(interpretBtn);
 			} else if (!interpretBtn.classList.contains('done')) {
@@ -1366,25 +1398,49 @@ async function handleClipObsidian(): Promise<void> {
 		const fileContent = frontmatter + noteContentField.value;
 
 		// Save to Obsidian
-		const selectedVault = vaultDropdown.value || currentTemplate.vault || '';
-		const isDailyNote = currentTemplate.behavior === 'append-daily' || currentTemplate.behavior === 'prepend-daily';
+		const selectedVault = vaultDropdown.value || template.vault || '';
+		const isDailyNote = template.behavior === 'append-daily' || template.behavior === 'prepend-daily';
 		const noteName = isDailyNote ? '' : noteNameField?.value || '';
 		const path = isDailyNote ? '' : pathField?.value || '';
 
-		await saveToObsidian(fileContent, noteName, path, selectedVault, currentTemplate.behavior);
-		const tabInfo = await getCurrentTabInfo();
-		await incrementStat('addToObsidian', selectedVault, path, tabInfo.url, tabInfo.title);
-
-		lastSelectedVault = selectedVault;
-		await setLocalStorage('lastSelectedVault', lastSelectedVault);
+		if (destination) {
+			if (!liveSyncPending || liveSyncPending.folder !== path || liveSyncPending.title !== noteName ||
+				liveSyncPending.markdown !== fileContent) {
+				liveSyncPending = { clipId: crypto.randomUUID(), folder: path, title: noteName, markdown: fileContent };
+			}
+			const result = await requestLiveSync({
+				action: 'liveSyncSave',
+				destinationId: destination.id,
+				...liveSyncPending,
+			});
+			liveSyncPending = undefined;
+			showLiveSyncSaveStatus('liveSyncSaved', result.path);
+			const tabInfo = await getCurrentTabInfo();
+			await incrementStat('addToObsidian', destination.label, path, tabInfo.url, tabInfo.title).catch(() => {});
+		} else {
+			await saveToObsidian(fileContent, noteName, path, selectedVault, template.behavior);
+			const tabInfo = await getCurrentTabInfo();
+			await incrementStat('addToObsidian', selectedVault, path, tabInfo.url, tabInfo.title);
+			lastSelectedVault = selectedVault;
+			await setLocalStorage('lastSelectedVault', lastSelectedVault);
+		}
 
 		if (!isSidePanel) {
 			setTimeout(() => window.close(), 500);
 		}
 	} catch (error) {
-		console.error('Error in handleClipObsidian:', error);
-		showError('failedToSaveFile');
+		if (destination) {
+			showLiveSyncSaveStatus(error instanceof LiveSyncError ? error.code : 'liveSyncSaveFailed');
+		} else {
+			console.error('Error in handleClipObsidian:', error);
+			showError('failedToSaveFile');
+		}
 		throw error;
+	} finally {
+		if (destination) {
+			savingToLiveSync = false;
+			liveSyncButton.disabled = false;
+		}
 	}
 }
 
