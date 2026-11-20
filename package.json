@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-clipper",
-	"version": "1.8.0-livesync.1",
+	"version": "1.8.3-livesync.1",
 	"description": "Obsidian Web Clipper fork with direct saving to Self-hosted LiveSync.",
 	"bin": {
 		"obsidian-clipper": "./dist/cli.cjs"
@@ -74,7 +74,7 @@
 		"@types/safari-extension": "^0.0.33",
 		"@vrtmrz/livesync-commonlib": "0.6.0",
 		"dayjs": "^1.11.13",
-		"defuddle": "^0.19.7",
+		"defuddle": "^0.19.9",
 		"dompurify": "^3.4.12",
 		"highlight.js": "^11.11.1",
 		"idb": "8.0.3",
