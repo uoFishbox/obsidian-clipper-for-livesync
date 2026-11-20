@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const STORES = { chrome, edge, firefox, safari };
+const STORES = { chrome, edge, firefox, safari, github };
 const FIREFOX_ID = 'clipper@obsidian.md';
 const SAFARI_BUNDLE_ID = 'md.obsidian.Obsidian-Web-Clipper';
 const XCODE_PROJECT = join(ROOT, 'xcode/Obsidian Web Clipper/Obsidian Web Clipper.xcodeproj');
@@ -319,19 +319,43 @@ function buildZip(browser) {
 	const file = join(ROOT, 'builds', `obsidian-web-clipper-${version}-${browser}.zip`);
 	if (!existsSync(file)) throw new Error(`Missing ${file}. Run npm run build:${browser}.`);
 	const manifest = JSON.parse(execFileSync('unzip', ['-p', file, 'manifest.json'], { encoding: 'utf8' }));
-	if (manifest.version !== version) throw new Error(`${file} contains version ${manifest.version}, expected ${version}.`);
+	const sourceManifest = JSON.parse(readFileSync(join(ROOT, 'src', `manifest.${browser}.json`), 'utf8'));
+	if (manifest.version !== sourceManifest.version || (manifest.version_name ?? manifest.version) !== version) {
+		throw new Error(`${file} contains version ${manifest.version_name ?? manifest.version} (${manifest.version}), expected ${version} (${sourceManifest.version}).`);
+	}
 	return file;
 }
 
+// Runs last, so the release goes up even when a store is still reviewing an older version.
+async function github() {
+	const files = ['chrome', 'firefox', 'safari'].map(buildZip);
+	const notes = changelogFile('github');
+	let exists = true;
+	try {
+		execFileSync('gh', ['release', 'view', version, '--json', 'url'], { cwd: ROOT, stdio: 'ignore' });
+	} catch {
+		exists = false;
+	}
+	if (exists) return console.log(`Release ${version} is already on GitHub.`);
+	if (dryRun) return console.log(`Would create release ${version} from ${notes} with ${files.length} zips.`);
+
+	run('gh', ['release', 'create', version, '--title', version, '--verify-tag', '--latest', '--notes-file', notes, ...files]);
+	console.log(`✓ Published release ${version} on GitHub.`);
+}
+
 // A store-specific changelog, like changelogs/1.8.0-firefox.md, replaces the shared one.
-function releaseNotes(store) {
+function changelogFile(store) {
 	const storeFile = join(ROOT, 'changelogs', `${version}-${store}.md`);
 	const file = existsSync(storeFile) ? storeFile : join(ROOT, 'changelogs', `${version}.md`);
 	if (!existsSync(file)) {
 		const available = existsSync(join(ROOT, 'changelogs')) ? readdirSync(join(ROOT, 'changelogs')).join(', ') : 'none';
 		throw new Error(`Missing ${file} (found: ${available}). Run scripts/generate-changelog.sh.`);
 	}
-	return readFileSync(file, 'utf8')
+	return file;
+}
+
+function releaseNotes(store) {
+	return readFileSync(changelogFile(store), 'utf8')
 		.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
 		.replace(/`([^`]+)`/g, '$1')
 		.replace(/^## (.+)$/gm, '$1:')
