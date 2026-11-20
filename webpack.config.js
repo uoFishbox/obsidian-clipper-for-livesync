@@ -45,9 +45,7 @@ module.exports = (env, argv) => {
 			highlights: './src/core/highlights.ts',
 			'reader-page': './src/core/reader-view.ts',
 			content: './src/content.ts',
-			background: isFirefox || isSafari
-				? './src/background.ts'
-				: ['./src/background.ts', './src/livesync/background.ts'],
+			background: ['./src/background.ts', './src/livesync/background.ts'],
 			style: './src/style.scss',
 			highlighter: './src/highlighter.scss',
 			reader: './src/reader.scss',
@@ -100,10 +98,8 @@ module.exports = (env, argv) => {
 			alias: {
 				'./utils/browser-polyfill': path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'),
 				'../utils/browser-polyfill': path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'),
-				// An extension service worker cannot spawn dedicated workers. Use Commonlib's direct Web Crypto backend.
-				...(!isFirefox && !isSafari ? {
-					'#worker$': require.resolve('@vrtmrz/livesync-commonlib/compat/worker/bgWorker')
-				} : {})
+				// Use the direct backend so LiveSync also runs in extension service workers.
+				'#worker$': require.resolve('@vrtmrz/livesync-commonlib/compat/worker/bgWorker')
 			}
 		},
 		module: {
@@ -146,10 +142,10 @@ module.exports = (env, argv) => {
 			new CopyPlugin({
 				patterns: [
 					{ from: 'LICENSE', to: 'LICENSE.txt' },
-					...(!isFirefox && !isSafari ? [{
+					{
 						from: path.join(path.dirname(require.resolve('@vrtmrz/livesync-commonlib/package.json')), 'LICENSE'),
 						to: 'LICENSE-LiveSync.txt'
-					}] : []),
+					},
 					{ 
 						from: isFirefox ? "src/manifest.firefox.json" : 
 							  (isSafari ? "src/manifest.safari.json" : "src/manifest.chrome.json"), 
@@ -182,12 +178,9 @@ module.exports = (env, argv) => {
 			new webpack.DefinePlugin({
 				'process.env.NODE_ENV': JSON.stringify(argv.mode),
 				'DEBUG_MODE': JSON.stringify(!isProduction),
-				'LIVESYNC_ENABLED': JSON.stringify(!isFirefox && !isSafari),
 				'MANIFEST_VERSION': JSON.stringify(package.version)
 			}),
-			...(!isFirefox && !isSafari ? [
-				new webpack.NormalModuleReplacementPlugin(/^(?:node:)?crypto$/, path.resolve(__dirname, 'src/livesync/web-crypto.js'))
-			] : []),
+			new webpack.NormalModuleReplacementPlugin(/^(?:node:)?crypto$/, path.resolve(__dirname, 'src/livesync/web-crypto.js')),
 			...(isProduction ? [
 				new ZipPlugin({
 					path: path.resolve(__dirname, 'builds'),

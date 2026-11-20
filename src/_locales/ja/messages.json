@@ -11,6 +11,15 @@
 	"liveSyncConnect": {
 		"message": "接続"
 	},
+	"liveSyncAllowAccess": {
+		"message": "アクセスを許可"
+	},
+	"liveSyncHostPermissionRequired": {
+		"message": "$1 へのアクセスを拡張機能に許可してください。"
+	},
+	"liveSyncHostPermissionDenied": {
+		"message": "接続を続けるには、CouchDB サーバーへのアクセスを許可してください。"
+	},
 	"liveSyncDisconnect": {
 		"message": "接続を解除"
 	},

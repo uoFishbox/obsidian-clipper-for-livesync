@@ -1,9 +1,10 @@
 {
 	"manifest_version": 3,
-	"name": "Obsidian Web Clipper",
-	"homepage_url": "https://obsidian.md/",
-	"version": "1.8.3",
-	"description": "Save content from the web to Obsidian, in a private and durable format you can always access offline.",
+	"name": "Obsidian Web Clipper for LiveSync",
+	"homepage_url": "https://github.com/uoFishbox/obsidian-clipper-for-livesync",
+	"version": "1.8.3.2",
+	"version_name": "1.8.3-livesync.1",
+	"description": "Clip web pages as Markdown and save to Obsidian or directly to Self-hosted LiveSync.",
 	"permissions": [
 		"activeTab",
 		"clipboardWrite",
@@ -17,6 +18,7 @@
 		"http://*/*",
 		"https://*/*"
 	],
+	"optional_host_permissions": ["http://*/*", "https://*/*"],
 	"action": {
 		"default_popup": "popup.html",
 		"default_icon": {
@@ -50,7 +52,7 @@
 		}
 	],
 	"content_security_policy": {
-		"extension_pages": "script-src 'self'; object-src 'self'"
+		"extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
 	},
 	"commands": {
 		"_execute_action": {

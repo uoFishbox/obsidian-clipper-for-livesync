@@ -1,8 +1,8 @@
 # Obsidian Web Clipper for Self-hosted LiveSync
 
-This fork adds direct saving to a Self-hosted LiveSync CouchDB database. In the Chromium build, import a LiveSync Setup URI to save Markdown notes while Obsidian is closed. **Save to LiveSync** appears next to **Add to Obsidian**. [Upstream Web Clipper](https://github.com/obsidianmd/obsidian-clipper) · [Self-hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync)
+This fork adds direct saving to a Self-hosted LiveSync CouchDB database on Chromium, Firefox, and Safari. Import a LiveSync Setup URI to save Markdown notes while Obsidian is closed. **Save to LiveSync** appears next to **Add to Obsidian**. [Upstream Web Clipper](https://github.com/obsidianmd/obsidian-clipper) · [Self-hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync)
 
-Download the Chromium ZIP and load the extracted folder as an unpacked extension, then connect it to your existing LiveSync database. [GitHub Releases](https://github.com/uoFishbox/obsidian-clipper-for-livesync/releases) · [Build and installation](#developers) · [LiveSync setup](#save-directly-to-self-hosted-livesync)
+Download the ZIP for your browser, load the extension, and connect it to your existing LiveSync database. [GitHub Releases](https://github.com/uoFishbox/obsidian-clipper-for-livesync/releases) · [Build and installation](#developers) · [LiveSync setup](#save-directly-to-self-hosted-livesync)
 
 ## Upstream Web Clipper
 
@@ -27,7 +27,7 @@ Documentation is available on the [Obsidian Help site](https://help.obsidian.md/
 
 ### Save directly to Self-hosted LiveSync
 
-In this fork's Chromium build, open **Settings → General → Self-hosted LiveSync**. Paste a Setup URI from an existing, initialized CouchDB Vault and enter the passphrase used to protect the URI. Select **Connect**, then reopen the clipper. **Save to LiveSync** appears next to **Add to Obsidian**. Quick Clip uses the connected database. The note will appear in Obsidian after its LiveSync plug-in next synchronizes.
+Open **Settings → General → Self-hosted LiveSync**. Paste a Setup URI from an existing, initialized CouchDB vault and enter its passphrase. Select **Connect**. If prompted, select **Allow access** and grant access to the CouchDB host. Reopen the clipper after it connects. **Save to LiveSync** appears next to **Add to Obsidian**. Quick Clip uses the connected database. The note appears in Obsidian after its LiveSync plug-in synchronizes.
 
 LiveSync uses the template's save behavior to create, append, prepend, or overwrite Markdown notes. A new note gets a numbered suffix if its name is already taken. Appending and prepending to an existing note preserve its frontmatter and use the clip's Markdown body.
 

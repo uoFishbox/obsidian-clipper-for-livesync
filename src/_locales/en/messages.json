@@ -11,6 +11,15 @@
 	"liveSyncConnect": {
 		"message": "Connect"
 	},
+	"liveSyncAllowAccess": {
+		"message": "Allow access"
+	},
+	"liveSyncHostPermissionRequired": {
+		"message": "Allow this extension to connect to $1."
+	},
+	"liveSyncHostPermissionDenied": {
+		"message": "Access to the CouchDB server is required. Allow access to continue connecting."
+	},
 	"liveSyncDisconnect": {
 		"message": "Disconnect"
 	},

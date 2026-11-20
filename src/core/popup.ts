@@ -23,7 +23,7 @@ import { sanitizeFileName } from '../utils/string-utils';
 import { saveFile } from '../utils/file-utils';
 import { translatePage, getMessage, setupLanguageAndDirection } from '../utils/i18n';
 import { formatPropertyValue } from '../utils/shared';
-import { LiveSyncError, liveSyncEnabled, requestLiveSync, type LiveSyncClip, type LiveSyncDestination } from '../livesync/messages';
+import { LiveSyncError, requestLiveSync, type LiveSyncClip, type LiveSyncDestination } from '../livesync/messages';
 
 interface ReaderModeResponse {
 	success: boolean;
@@ -406,9 +406,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 			}
 
 			try {
-				if (liveSyncEnabled) {
-					({ destination: liveSyncDestination } = await requestLiveSync({ action: 'liveSyncStatus' }));
-				}
+				({ destination: liveSyncDestination } = await requestLiveSync({ action: 'liveSyncStatus' }));
 				// DOM-dependent initializations
 				updateVaultDropdown(loadedSettings.vaults);
 				populateTemplateDropdown();

@@ -1,6 +1,6 @@
 import { getMessage } from '../utils/i18n';
 import browser from '../utils/browser-polyfill';
-import { LiveSyncError, liveSyncEnabled, requestLiveSync, type LiveSyncDestination } from './messages';
+import { LiveSyncError, requestLiveSync, type LiveSyncDestination } from './messages';
 import { dailyNotePath, dailyNoteSettingsKey, defaultDailyNote } from './note-path';
 
 async function initializeDailyNoteSettings() {
@@ -26,7 +26,6 @@ async function initializeDailyNoteSettings() {
 }
 
 export async function initializeLiveSyncSettings() {
-	if (!liveSyncEnabled) return;
 	const form = document.querySelector<HTMLFormElement>('#livesync-form')!;
 	const uri = form.querySelector<HTMLInputElement>('#livesync-uri')!;
 	const passphrase = form.querySelector<HTMLInputElement>('#livesync-passphrase')!;
@@ -34,12 +33,17 @@ export async function initializeLiveSyncSettings() {
 	const disconnect = form.querySelector<HTMLButtonElement>('#livesync-disconnect')!;
 	const status = form.querySelector<HTMLElement>('#livesync-status')!;
 	let destination: LiveSyncDestination | undefined;
+	let requiredOrigin: string | undefined;
 
 	function showStatus() {
 		disconnect.hidden = !destination;
-		status.textContent = destination
+		connect.textContent = getMessage(requiredOrigin ? 'liveSyncAllowAccess' : 'liveSyncConnect');
+		const connectionStatus = destination
 			? getMessage('liveSyncConnected', destination.label)
 			: getMessage('liveSyncDisconnected');
+		status.textContent = requiredOrigin
+			? `${connectionStatus} ${getMessage('liveSyncHostPermissionRequired', requiredOrigin.slice(0, -2))}`
+			: connectionStatus;
 	}
 
 	async function update(action: () => Promise<void>) {
@@ -59,13 +63,28 @@ export async function initializeLiveSyncSettings() {
 	form.addEventListener('submit', event => {
 		event.preventDefault();
 		void update(async () => {
+			if (requiredOrigin) {
+				// Request permission from this user gesture before any other asynchronous work.
+				const granted = await browser.permissions.request({ origins: [requiredOrigin] }).catch(() => false);
+				if (!granted) throw new LiveSyncError('liveSyncHostPermissionDenied');
+				requiredOrigin = undefined;
+				connect.textContent = getMessage('liveSyncConnect');
+			}
 			try {
-				({ destination } = await requestLiveSync({ action: 'liveSyncConnect', uri: uri.value, passphrase: passphrase.value }));
+				const result = await requestLiveSync({ action: 'liveSyncConnect', uri: uri.value, passphrase: passphrase.value });
+				requiredOrigin = result.requiredOrigin;
+				if (requiredOrigin) return;
+				destination = result.destination;
 				uri.value = '';
 			} finally {
-				passphrase.value = '';
+				if (!requiredOrigin) passphrase.value = '';
 			}
 		});
+	});
+	form.addEventListener('input', () => {
+		if (!requiredOrigin) return;
+		requiredOrigin = undefined;
+		showStatus();
 	});
 	disconnect.addEventListener('click', () => {
 		void update(async () => {

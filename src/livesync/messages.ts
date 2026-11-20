@@ -1,14 +1,12 @@
 import browser from '../utils/browser-polyfill';
 import type { Template } from '../types/types';
 
-declare const LIVESYNC_ENABLED: boolean;
-export const liveSyncEnabled = LIVESYNC_ENABLED;
-
 export type LiveSyncErrorCode =
 	| 'liveSyncInvalidSetup'
 	| 'liveSyncUnsupportedRemote'
 	| 'liveSyncInvalidServer'
 	| 'liveSyncConnectionFailed'
+	| 'liveSyncHostPermissionDenied'
 	| 'liveSyncDatabaseNotReady'
 	| 'liveSyncDestinationChanged'
 	| 'liveSyncInvalidPath'
@@ -46,7 +44,7 @@ export type LiveSyncRequest =
 	| ({ action: 'liveSyncSave'; destinationId: string } & LiveSyncClip);
 
 export type LiveSyncResult =
-	| { ok: true; destination?: LiveSyncDestination; path?: string }
+	| { ok: true; destination?: LiveSyncDestination; path?: string; requiredOrigin?: string }
 	| { ok: false; error: LiveSyncErrorCode };
 
 export async function requestLiveSync(request: LiveSyncRequest) {

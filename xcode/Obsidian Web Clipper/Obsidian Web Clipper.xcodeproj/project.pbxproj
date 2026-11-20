@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CB3A7F230650454D8577CF01 /* LICENSE-LiveSync.txt in Resources */ = {isa = PBXBuildFile; fileRef = CB3A7F230650454D8577CF00 /* LICENSE-LiveSync.txt */; };
+		CB3A7F230650454D8577CF02 /* LICENSE-LiveSync.txt in Resources */ = {isa = PBXBuildFile; fileRef = CB3A7F230650454D8577CF00 /* LICENSE-LiveSync.txt */; };
 		6C815A672FDC810000B107DA /* content-loader.js in Resources */ = {isa = PBXBuildFile; fileRef = 6C815A662FDC810000B107DA /* content-loader.js */; };
 		6C815A682FDC810000B107DA /* content-loader.js in Resources */ = {isa = PBXBuildFile; fileRef = 6C815A662FDC810000B107DA /* content-loader.js */; };
 		7A15D4702CB5D97B00BC4F99 /* highlighter.css in Resources */ = {isa = PBXBuildFile; fileRef = 7A15D46F2CB5D97B00BC4F99 /* highlighter.css */; };
@@ -118,6 +120,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CB3A7F230650454D8577CF00 /* LICENSE-LiveSync.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = "LICENSE-LiveSync.txt"; path = "../../../dist_safari/LICENSE-LiveSync.txt"; sourceTree = "<group>"; };
 		6C815A662FDC810000B107DA /* content-loader.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "content-loader.js"; path = "../../../dist_safari/content-loader.js"; sourceTree = "<group>"; };
 		7A15D46F2CB5D97B00BC4F99 /* highlighter.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = highlighter.css; path = ../../../dist_safari/highlighter.css; sourceTree = "<group>"; };
 		7A6480582D820A9800A5924D /* reader.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = reader.css; path = ../../../dist_safari/reader.css; sourceTree = "<group>"; };
@@ -294,6 +297,7 @@
 		7AEF05C92CA0F50D005FFBC2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CB3A7F230650454D8577CF00 /* LICENSE-LiveSync.txt */,
 				7AEF05CB2CA0F50D005FFBC2 /* background.js */,
 				7AEF05CC2CA0F50D005FFBC2 /* popup.js */,
 				7A15D46F2CB5D97B00BC4F99 /* highlighter.css */,
@@ -475,6 +479,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB3A7F230650454D8577CF01 /* LICENSE-LiveSync.txt in Resources */,
 				7AC138872E4B9C8E00B6F4CF /* side-panel.html in Resources */,
 				7A6535C92D8B530300DDF54C /* reader-script.js in Resources */,
 				7AEF05F32CA0F50D005FFBC2 /* settings.html in Resources */,
@@ -502,6 +507,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB3A7F230650454D8577CF02 /* LICENSE-LiveSync.txt in Resources */,
 				7AC138882E4B9C8F00B6F4CF /* side-panel.html in Resources */,
 				7A6535CA2D8B530300DDF54C /* reader-script.js in Resources */,
 				7AEF05E62CA0F50D005FFBC2 /* settings.html in Resources */,

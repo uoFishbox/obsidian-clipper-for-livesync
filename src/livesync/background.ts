@@ -199,6 +199,12 @@ async function handleRequest(message: LiveSyncRequest): Promise<LiveSyncResult> 
 		}
 		case 'liveSyncConnect': {
 			const options = await importConnection(message.uri, message.passphrase);
+			const server = new URL(options.url);
+			// A WebExtension host permission covers the hostname across ports.
+			const origin = `${server.protocol}//${server.hostname}/*`;
+			if (!await browser.permissions.contains({ origins: [origin] })) {
+				return { ok: true, requiredOrigin: origin };
+			}
 			await withClient(options, async () => {});
 			const connection = { id: crypto.randomUUID(), options };
 			await storage.put('connections', connection, 'active');
