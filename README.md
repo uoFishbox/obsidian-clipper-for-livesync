@@ -1,4 +1,4 @@
-# Obsidian Web Clipper for LiveSync
+# Obsidian Web Clipper for Self-hosted LiveSync
 
 This fork adds direct saving to a Self-hosted LiveSync CouchDB database. In the Chromium build, import a LiveSync Setup URI to save Markdown notes while Obsidian is closed. **Save to LiveSync** appears next to **Add to Obsidian**. [Upstream Web Clipper](https://github.com/obsidianmd/obsidian-clipper) · [Self-hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync)
 
