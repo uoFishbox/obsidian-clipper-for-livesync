@@ -140,7 +140,7 @@ async function saveNote(client: DirectFileManipulator, storage: IDBPDatabase<Con
 	let id = await client.path2id(path);
 	let meta = await getNoteMeta(client, id);
 	if (!attempt && clip.behavior === 'create') {
-		for (let sequence = 2; meta; sequence++) {
+		for (let sequence = 2; meta && !meta.deleted; sequence++) {
 			path = liveSyncNotePath(clip.folder, clip.title, sequence) as NotePath;
 			id = await client.path2id(path);
 			meta = await getNoteMeta(client, id);

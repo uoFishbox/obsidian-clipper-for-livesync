@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-clipper",
-	"version": "1.8.4-livesync.1",
+	"version": "1.8.4-livesync.2",
 	"description": "Obsidian Web Clipper fork with direct saving to Self-hosted LiveSync.",
 	"bin": {
 		"obsidian-clipper": "./dist/cli.cjs"
